@@ -26,8 +26,7 @@ public class PostService {
 
     @Transactional
     public PostReadDTO createPost(PostCreateDTO create) {
-        Post post = create.toEntity();
-        postRepository.save(post);
+        Post post = postRepository.save(create.toEntity());
         return PostReadDTO.from(post);
     }
 
@@ -39,6 +38,8 @@ public class PostService {
 
     @Transactional
     public PostReadDTO updatePost(Long postId, PostUpdateDTO update) {
+        if(!postRepository.existsById(postId))
+            throw new IllegalArgumentException("해당 게시글이 없습니다. id=" + postId);
         Post post = update.toEntity();
         post.setId(postId);
         postRepository.save(post);
